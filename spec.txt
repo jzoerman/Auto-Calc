@@ -1,9 +1,0 @@
-
-
-Create a comprehensive auto cost calculator taking into consideration downpayment, estimated future value, total cost, total finance costs, finance amortization, early payoff calculations, etc. The core idea is to quantify the trus cost of a vehicle over a period of time whether financed or paying cash. 
-
-Create as a simple HTML & Javascript application using local storage.
-
-Modern design, dark mode optional. Include rich, modern chart showing payoff and value over time. 
-
-Start by creating a plan for this application and asking any necessary questions. Consider any useful ideas I may have missed.
