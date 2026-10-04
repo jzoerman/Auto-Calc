@@ -1,0 +1,14 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {calculate,defaults} from '../calculator.js';
+const close=(a,b)=>assert.ok(Math.abs(a-b)<.01,`${a} != ${b}`);
+test('zero interest repays principal and cost reconciles',()=>{const c=calculate({...defaults,apr:0});close(c.payment,c.principal/60);close(c.end.balance,0);close(c.end.cost,c.purchase-c.end.value)});
+test('cash and zero-interest financed ownership cost match',()=>{const a=calculate({...defaults,mode:'cash'}),b=calculate({...defaults,apr:0});close(a.end.cost,b.end.cost)});
+test('short ownership includes outstanding payoff, without double counting',()=>{const c=calculate({...defaults,months:12});close(c.end.cost,c.purchase+c.end.interestTotal-c.end.value);assert.ok(c.end.balance>0)});
+test('extra payments save interest and end payments',()=>{const c=calculate({...defaults,extra:500});assert.ok(c.payoffMonth<60);assert.ok(c.interestSaved>0);assert.ok(c.schedule.slice(c.payoffMonth).every(r=>r.payment===0&&r.interest===0))});
+test('early payoff pays all debt and stops interest',()=>{const c=calculate({...defaults,payoff:6});assert.equal(c.payoffMonth,6);assert.equal(c.schedule[5].balance,0);assert.equal(c.schedule[6].interest,0)});
+test('trade equity accounted for, including negative equity',()=>{for(const tradeDebt of [2000,15000]){const c=calculate({...defaults,trade:10000,tradeDebt});close(c.end.cost,c.purchase+c.end.interestTotal-c.end.value)}});
+test('override, odometer, and miles traveled',()=>{const c=calculate({...defaults,months:18,resale:20000});close(c.end.value,20000);assert.equal(c.end.odometer,30000);assert.equal(c.miles,18000);close(c.costPerMile,c.end.cost/18000)});
+test('zero mileage has no cost per mile',()=>assert.equal(calculate({...defaults,mileage:0}).costPerMile,null));
+test('oversized payments never create negative balances',()=>{const c=calculate({...defaults,extra:100000});assert.equal(c.payoffMonth,1);assert.ok(c.schedule.every(r=>r.balance>=0))});
+test('invalid inputs rejected',()=>{for(const bad of [{apr:-1},{months:0},{depreciation:'150'},{resale:'nope'}])assert.throws(()=>calculate({...defaults,...bad}))});
