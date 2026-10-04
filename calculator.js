@@ -1,8 +1,10 @@
-export const defaults = {price:35000,tax:6,taxable:35000,fees:600,financeFees:true,rebate:0,down:5000,trade:0,tradeDebt:0,mode:'finance',apr:6.5,term:60,months:60,extra:0,lump:0,lumpMonth:12,payoff:0,depreciation:'18, 12, 10, 8, 8',resale:'',odometer:12000,mileage:12000};
+import {localDateString,dateTimestamp} from './timeline.js';
+export const defaults = {startDate:localDateString(),price:35000,tax:6,taxable:35000,fees:600,financeFees:true,rebate:0,down:5000,trade:0,tradeDebt:0,mode:'finance',apr:6.5,term:60,months:60,extra:0,lump:0,lumpMonth:12,payoff:0,depreciation:'18, 12, 10, 8, 8',resale:'',odometer:12000,mileage:12000};
 export function normalize(raw) {
  const d={...defaults};
  for(const key of Object.keys(d)) if(raw[key]!==undefined) d[key]=raw[key];
  for(const key of Object.keys(d)) if(typeof defaults[key]==='number') { d[key]=Number(d[key]); if(!Number.isFinite(d[key])||d[key]<0) throw new Error('Enter a valid nonnegative value for '+key+'.'); }
+ dateTimestamp(d.startDate);
  for(const k of ['term','months','lumpMonth','payoff']) d[k]=Math.round(d[k]);
  if(d.term<1||d.term>600||d.months<1||d.months>600) throw new Error('Loan and ownership periods must be between 1 and 600 months.');
  if(!['cash','finance'].includes(d.mode)) throw new Error('Choose cash or financing.');

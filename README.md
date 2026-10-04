@@ -25,6 +25,7 @@ npm test
 - Loans use a fixed APR with monthly interest and end-of-month payments. Extra payments go toward principal; early payoff includes that month's interest.
 - Ownership cost assumes sale and settlement of the remaining loan at the selected endpoint. It includes contributed trade-in equity and avoids counting depreciation twice.
 - Depreciation compounds monthly from each year's entered percentage. The last percentage repeats for subsequent years. A resale override gradually adjusts the modeled curve to the selected endpoint.
+- Ownership start dates anchor calendar labels on both graphs. Monthly anniversaries clamp to the last day of shorter months without drifting. The Today marker uses the browser’s local calendar date, and refreshes when the day changes. Current balance and interest include completed payment anniversaries; current value and mileage interpolate between monthly estimates. Today outside the selected ownership period is labeled explicitly without extrapolation. Older saved scenarios without a start date default to the day the application loads.
 - Annual mileage is distributed evenly across months. Cost per mile uses miles driven during ownership, excluding the starting odometer.
 - Sales tax uses the editable taxable amount. The calculator does not infer state-specific tax treatment. Rebates reduce purchase cost; fees can be financed or paid upfront.
 - Calculations retain full precision internally; displayed currency is rounded. Actual lenders may use different daily interest and rounding rules.
